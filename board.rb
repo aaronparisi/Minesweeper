@@ -48,10 +48,12 @@ class Board
     end
 
     def render()
-        puts "  " + (0...row_size).to_a.join(" ")
+        puts "    " + (0...row_size).to_a.join("   ")
+        puts "  -----------------------------------------"
         grid.each_with_index do |row, idx|
-            print "#{idx} "
-            puts row.map {|tile| tile.show_yourself()}.join(" ")
+            print "#{idx} | "
+            puts row.map {|tile| tile.show_yourself()}.join(" | ") + " |"
+            puts "  -----------------------------------------"
         end
         nil
     end

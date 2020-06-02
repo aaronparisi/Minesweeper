@@ -1,11 +1,14 @@
+require 'yaml'
+
 require_relative 'board'
 
 class Minesweeper
 
     attr_reader :board
 
-    def initialize(row_size = 10, num_mines = 20)
-        @board = Board.new(row_size, num_mines)
+    def initialize(row_size = 10, num_mines = 10)
+        @board = File.exists?("a_board.yml") ? YAML.load(File.read("a_board.yml")) : Board.new(row_size, num_mines)
+        #@board = Board.new(row_size, num_mines)
     end
 
     def blow_up()
@@ -23,7 +26,8 @@ class Minesweeper
         pos = gets.chomp().split(",").map {|n| Integer(n)}
         puts "enter action you'd like to take"
         action = gets.chomp()
-
+        #debugger
+        return nil if action == "quit"
         take_step(pos, action)
 
         pos
@@ -45,12 +49,26 @@ class Minesweeper
         end
     end
 
+    def leave_game()
+        puts "Would you like to save the game? y/n"
+        save = gets.chomp()
+        if save == "y"
+            File.open("a_board.yml", "w") {|file| file.write(board.to_yaml)}
+        else
+            # delete any saved board files so they don't get loaded next time
+            File.delete("a_board.yml") if File.exist?("a_board.yml")
+        end
+    end
+
     def play_game()
-        board.lay_mines()
+        board.lay_mines() if ! File.exist?("a_board.yml")
         while true
             last_move = take_turn
             #debugger
-            if board.tripped_mine?(last_move)
+            if last_move == nil
+                leave_game()
+                break
+            elsif board.tripped_mine?(last_move)
                 blow_up
                 break
             elsif board.field_cleared?
