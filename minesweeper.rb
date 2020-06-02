@@ -18,8 +18,9 @@ class Minesweeper
     end
 
     def take_turn()
-        puts "enter a location you'd like to guess"
-        pos = gets.chomp()
+        board.render
+        puts "enter a location you'd like to guess in the form 'x,y'"
+        pos = gets.chomp().split(",").map {|n| Integer(n)}
         puts "enter action you'd like to take"
         action = gets.chomp()
 

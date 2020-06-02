@@ -31,7 +31,7 @@ class Tile
     def show_yourself()
 
         if revealed
-            armed ? "B" : neighbors.to_s
+            armed ? "!" : neighbors.to_s
         else
             flagged ? "F" : "*"
         end
