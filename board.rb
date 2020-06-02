@@ -1,3 +1,4 @@
+require 'byebug'
 require_relative 'tile'
 
 class Board
@@ -8,7 +9,7 @@ class Board
     def initialize(row_size = 3, num_mines = 3)
         @num_mines = num_mines
         @row_size = row_size
-        @grid = Array.new(3) {Array.new(3) {Tile.new()}}
+        @grid = Array.new(row_size) {Array.new(row_size) {Tile.new()}}
 
         lay_mines()
     end
@@ -30,9 +31,11 @@ class Board
 
     def lay_mines()
         planted = 0
+        #debugger
         until planted == num_mines do
-            mine_loc = nil
-            mine_loc = get_random_loc until mine_loc && ! self[mine_loc].is_armed?
+            mine_loc = get_random_loc
+            #debugger
+            mine_loc = get_random_loc until ! self[mine_loc].is_armed?
 
             self[mine_loc].lay_mine
 
@@ -58,7 +61,7 @@ class Board
     end
 
     def tripped_mine?(pos)
-        self[pos].armed?
+        self[pos].armed && self[pos].revealed
     end
 
     def field_cleared?()
@@ -76,10 +79,6 @@ class Board
         puts "Ka-boom!"
     end
 
-    def won_game()
-        puts "you won!"
-    end
-
     def reveal_tile(pos)
         grid[pos].reveal()
     end
@@ -89,6 +88,7 @@ class Board
     end
 
     def on_board?(pos)
+        #debugger
         x, y = pos
         x.between?(0, row_size-1) && y.between?(0, row_size-1)
     end
@@ -99,9 +99,11 @@ class Board
         (-1..1).each do |xval|
             (-1..1).each do |yval|
                 new_pos = [x+xval, y+yval]
+                #debugger
                 ret << self[new_pos] if on_board?(new_pos)
             end
         end
+        # Why is the [](pos) method getting called in here???
         ret
     end
 

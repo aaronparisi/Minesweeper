@@ -52,4 +52,15 @@ class Tile
     def add_neighbor()
         @neighbors += 1
     end
+
+    def take_action(action)
+        case action
+        when "f"
+            flag
+        when "r"
+            reveal
+        when "u"
+            unflag
+        end
+    end
 end
