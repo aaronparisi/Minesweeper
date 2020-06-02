@@ -3,11 +3,11 @@ require_relative 'tile'
 class Board
 
     attr_accessor :grid
-    attr_reader :rowSize, :num_mines
+    attr_reader :row_size, :num_mines
 
-    def initialize(rowSize = 3, num_mines = 3)
+    def initialize(row_size = 3, num_mines = 3)
         @num_mines = num_mines
-        @rowSize = rowSize
+        @row_size = row_size
         @grid = Array.new(3) {Array.new(3) {Tile.new()}}
 
         lay_mines()
@@ -25,15 +25,18 @@ class Board
     # end
 
     def get_random_loc()
-        [rand(rowSize), rand(rowSize)]
+        [rand(row_size), rand(row_size)]
     end
 
     def lay_mines()
         planted = 0
         until planted == num_mines do
-            mine_loc = get_random_loc until ! self[mine_loc].is_a_bomb?
+            mine_loc = get_random_loc until ! self[mine_loc].is_armed?
 
             self[mine_loc].lay_mine
+
+            all_neighbors = get_all_neighbors(mine_loc)
+            all_neighbors.each do {|neigh| neigh.add_neighbor()}
             
             planted += 1
         end
@@ -54,6 +57,31 @@ class Board
     def flag_tile(pos)
         grid[pos].flag()
     end
+
+    def on_board?(pos)
+        x, y = pos
+        x.between?(0, row_size-1) && y.between?(0, row_size01)
+    end
+
+    def get_all_neighbors(pos)
+        x, y = pos
+        ret = []
+        (-1..1).each do |xval|
+            (-1..1).each do |yval|
+                new_pos = [x+xval, y+yval]
+                ret << self[new_pos] if on_board?(new_pos)
+                end
+            end
+        end
+        ret
+    end
+
+    # def num_armed_neighbors(pos)
+    #     this_tile = self[pos]
+    #     neighbors = get_all_neighbors(pos)
+    #     total = neighbors.count {|neigh| neigh.armed}
+    #     this_tile.set_neighbors(total)
+    # end
 
     # def reveal_bombs()
     #     grid.each do |row|

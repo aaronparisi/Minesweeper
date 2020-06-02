@@ -3,10 +3,10 @@ class Tile
 
 
     attr_accessor :revealed, :flagged, :neighbors
-    attr_reader :mine
+    attr_reader :armed
 
-    def initialize(mine = false)
-        @@mine = mine
+    def initialize(armed = false)
+        @armed = armed
         @revealed = false
         @flagged = false
         @neighbors = 0
@@ -37,11 +37,19 @@ class Tile
         end
     end
 
-    def is_a_mine?()
-        mine
+    def is_armed?()
+        armed
     end
 
     def plant_mine()
-        @mine = true
+        @armed = true
+    end
+
+    def set_neighbors(num)
+        @neighbors = num
+    end
+
+    def add_neighbor()
+        @neighbors += 1
     end
 end
