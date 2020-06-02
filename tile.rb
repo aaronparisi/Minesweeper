@@ -29,11 +29,11 @@ class Tile
     end
 
     def show_yourself()
-        # 1. if ! revealed, return " "
-        if ! revealed
-            flagged ? "F" : "*"
+
+        if revealed
+            armed ? "B" : neighbors.to_s
         else
-            neighbors == 0 ? "_" : neighbors.to_s
+            flagged ? "F" : "*"
         end
     end
 
@@ -41,7 +41,7 @@ class Tile
         armed
     end
 
-    def plant_mine()
+    def lay_mine()
         @armed = true
     end
 

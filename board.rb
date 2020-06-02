@@ -31,12 +31,13 @@ class Board
     def lay_mines()
         planted = 0
         until planted == num_mines do
-            mine_loc = get_random_loc until ! self[mine_loc].is_armed?
+            mine_loc = nil
+            mine_loc = get_random_loc until mine_loc && ! self[mine_loc].is_armed?
 
             self[mine_loc].lay_mine
 
             all_neighbors = get_all_neighbors(mine_loc)
-            all_neighbors.each do {|neigh| neigh.add_neighbor()}
+            all_neighbors.each{|neigh| neigh.add_neighbor()}
             
             planted += 1
         end
@@ -50,6 +51,35 @@ class Board
         nil
     end
 
+    def reveal_all()
+        grid.each do |row|
+            row.each {|tile| tile.reveal}
+        end
+    end
+
+    def tripped_mine?(pos)
+        self[pos].armed?
+    end
+
+    def field_cleared?()
+        grid.all? do |row|
+            row.all? do |tile|
+                ! tile.revealed if tile.is_armed?()
+                tile.revealed if ! tile.is_armed?()
+            end
+        end
+    end
+
+    def lost_game()
+        reveal_all
+        render
+        puts "Ka-boom!"
+    end
+
+    def won_game()
+        puts "you won!"
+    end
+
     def reveal_tile(pos)
         grid[pos].reveal()
     end
@@ -60,7 +90,7 @@ class Board
 
     def on_board?(pos)
         x, y = pos
-        x.between?(0, row_size-1) && y.between?(0, row_size01)
+        x.between?(0, row_size-1) && y.between?(0, row_size-1)
     end
 
     def get_all_neighbors(pos)
@@ -70,7 +100,6 @@ class Board
             (-1..1).each do |yval|
                 new_pos = [x+xval, y+yval]
                 ret << self[new_pos] if on_board?(new_pos)
-                end
             end
         end
         ret
