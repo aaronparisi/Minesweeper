@@ -30,7 +30,7 @@ class Minesweeper
         return nil if action == "quit"
         take_step(pos, action)
 
-        pos
+        [pos, action]
     end
 
     def take_step(pos, action)
@@ -68,14 +68,16 @@ class Minesweeper
             if last_move == nil
                 leave_game()
                 break
-            elsif board.tripped_mine?(last_move)
+            elsif "fu".include?(last_move[1])
+                next
+            elsif board.tripped_mine?(last_move[0])
                 blow_up
                 break
             elsif board.field_cleared?
                 celebrate
                 break
             else
-                fan_out(last_move)
+                fan_out(last_move[0])
             end
         end
     end

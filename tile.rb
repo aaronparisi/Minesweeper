@@ -1,3 +1,6 @@
+require 'colorize'
+require 'byebug'
+
 class Tile
 
 
@@ -29,11 +32,11 @@ class Tile
     end
 
     def show_yourself()
-
+        #debugger
         if revealed
-            armed ? "*" : (neighbors == 0 ? "_" : neighbors.to_s)
+            armed ? "*".red : (neighbors == 0 ? "_".colorize(:blue) : neighbors.to_s.colorize(:green))
         else
-            flagged ? "F" : " "
+            flagged ? "F".colorize(:white) : " "
         end
     end
 
@@ -54,10 +57,13 @@ class Tile
     end
 
     def take_action(action)
+        #debugger
         case action
         when "f"
+            #puts "going to flag #{self}"
             flag
         when "r"
+            puts "going to reveal #{self}"
             reveal
         when "u"
             unflag
