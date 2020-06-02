@@ -42,8 +42,24 @@ class Board
 
     def render()
         grid.each do |row|
-            row.map {|tile| tile.show_yourself}.join(" ")
+            puts row.map {|tile| tile.show_yourself()}.join(" ")
             puts
         end
+        nil
     end
+
+    def reveal_tile(pos)
+        grid[pos].reveal()
+    end
+
+    def flag_tile(pos)
+        grid[pos].flag()
+    end
+
+    # def reveal_bombs()
+    #     grid.each do |row|
+    #         puts row.map {|tile| tile.show_yourself()}.join(" ")
+    #         puts
+    #     end
+    # end
 end

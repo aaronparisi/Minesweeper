@@ -12,26 +12,26 @@ class Tile
         @neighbors = 0
     end
 
-    def reveal_tile()
+    def reveal()
         @revealed = true
     end
 
-    def hide_tile()
+    def hide()
         @revealed = false
     end
 
-    def flag_tile()
+    def flag()
         @flagged = true
     end
 
-    def unflag_tile()
+    def unflag()
         @flagged = false
     end
 
     def show_yourself()
         # 1. if ! revealed, return " "
         if ! revealed
-            flagged ? "F" : " "
+            flagged ? "F" : "*"
         else
             neighbors == 0 ? "_" : neighbors.to_s
         end
