@@ -3,14 +3,14 @@ require_relative 'tile'
 class Board
 
     attr_accessor :grid
-    attr_reader :rowSize, :num_bombs
+    attr_reader :rowSize, :num_mines
 
-    def initialize(rowSize = 3, num_bombs = 3)
-        @num_bombs = num_bombs
+    def initialize(rowSize = 3, num_mines = 3)
+        @num_mines = num_mines
         @rowSize = rowSize
         @grid = Array.new(3) {Array.new(3) {Tile.new()}}
 
-        plant_bombs()
+        lay_mines()
     end
 
     def [](pos)
@@ -28,13 +28,12 @@ class Board
         [rand(rowSize), rand(rowSize)]
     end
 
-    def plant_bombs()
+    def lay_mines()
         planted = 0
-        until planted == num_bombs do
-            bomb_loc = get_random_loc
-            bomb_loc = get_random_loc until ! self[bomb_loc].is_a_bomb?
+        until planted == num_mines do
+            mine_loc = get_random_loc until ! self[mine_loc].is_a_bomb?
 
-            self[bomb_loc].plant_bomb
+            self[mine_loc].lay_mine
             
             planted += 1
         end

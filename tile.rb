@@ -3,10 +3,10 @@ class Tile
 
 
     attr_accessor :revealed, :flagged, :neighbors
-    attr_reader :bomb
+    attr_reader :mine
 
-    def initialize(bomb = false)
-        @bomb = bomb
+    def initialize(mine = false)
+        @@mine = mine
         @revealed = false
         @flagged = false
         @neighbors = 0
@@ -37,11 +37,11 @@ class Tile
         end
     end
 
-    def is_a_bomb?()
-        bomb
+    def is_a_mine?()
+        mine
     end
 
-    def plant_bomb()
-        @bomb = true
+    def plant_mine()
+        @mine = true
     end
 end
