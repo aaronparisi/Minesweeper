@@ -38,8 +38,14 @@ class Minesweeper
         board.lay_mines()
         while true
             last_move = take_turn
-            blow_up if board.tripped_mine?(last_move)
-            celebrate if board.field_cleared?
+            #debugger
+            if board.tripped_mine?(last_move)
+                blow_up
+                break
+            elsif board.field_cleared?
+                celebrate
+                break
+            end
         end
     end
 end

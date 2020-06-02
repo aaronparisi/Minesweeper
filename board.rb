@@ -11,7 +11,7 @@ class Board
         @row_size = row_size
         @grid = Array.new(row_size) {Array.new(row_size) {Tile.new()}}
 
-        lay_mines()
+        #lay_mines()
     end
 
     def [](pos)
@@ -43,6 +43,7 @@ class Board
             all_neighbors.each{|neigh| neigh.add_neighbor()}
             
             planted += 1
+            puts "planted #{planted} of #{num_mines} mines."
         end
     end
 
