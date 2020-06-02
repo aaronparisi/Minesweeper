@@ -4,7 +4,7 @@ class Minesweeper
 
     attr_reader :board
 
-    def initialize(row_size = 5, num_mines = 3)
+    def initialize(row_size = 10, num_mines = 20)
         @board = Board.new(row_size, num_mines)
     end
 
@@ -34,6 +34,17 @@ class Minesweeper
         tile.take_action(action)
     end
 
+    def fan_out(pos)
+        all_neighbors = board.get_all_neighbors(pos).filter {|tile| ! tile.revealed}
+        unless all_neighbors.any? {|neigh| neigh.armed}
+            all_neighbors.each do |neigh|
+                neigh.reveal
+                #debugger
+                fan_out(board.get_tile_pos(neigh)) if ! neigh.armed
+            end
+        end
+    end
+
     def play_game()
         board.lay_mines()
         while true
@@ -45,6 +56,8 @@ class Minesweeper
             elsif board.field_cleared?
                 celebrate
                 break
+            else
+                fan_out(last_move)
             end
         end
     end

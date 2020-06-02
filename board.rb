@@ -48,9 +48,10 @@ class Board
     end
 
     def render()
-        grid.each do |row|
+        puts "  " + (0...row_size).to_a.join(" ")
+        grid.each_with_index do |row, idx|
+            print "#{idx} "
             puts row.map {|tile| tile.show_yourself()}.join(" ")
-            puts
         end
         nil
     end
@@ -106,6 +107,11 @@ class Board
         end
         # Why is the [](pos) method getting called in here???
         ret
+    end
+
+    def get_tile_pos(tile)
+        idx = grid.flatten.index(tile)
+        return [idx/row_size, idx%row_size]
     end
 
     # def num_armed_neighbors(pos)
