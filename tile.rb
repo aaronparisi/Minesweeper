@@ -2,13 +2,14 @@ class Tile
 
 
 
-    attr_accessor :revealed, :flagged
+    attr_accessor :revealed, :flagged, :neighbors
     attr_reader :bomb
 
     def initialize(bomb = false)
         @bomb = bomb
         @revealed = false
         @flagged = false
+        @neighbors = 0
     end
 
     def reveal_tile()
@@ -27,8 +28,13 @@ class Tile
         @flagged = false
     end
 
-    def get_tile_char()
-        # not sure if this is gonna happen in here or in Board class??
+    def show_yourself()
+        # 1. if ! revealed, return " "
+        if ! revealed
+            flagged ? "F" : " "
+        else
+            neighbors == 0 ? "_" : neighbors.to_s
+        end
     end
 
     def is_a_bomb?()

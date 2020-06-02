@@ -39,4 +39,11 @@ class Board
             planted += 1
         end
     end
+
+    def render()
+        grid.each do |row|
+            row.map {|tile| tile.show_yourself}.join(" ")
+            puts
+        end
+    end
 end
