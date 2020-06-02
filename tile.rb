@@ -30,4 +30,12 @@ class Tile
     def get_tile_char()
         # not sure if this is gonna happen in here or in Board class??
     end
+
+    def is_a_bomb?()
+        bomb
+    end
+
+    def plant_bomb()
+        @bomb = true
+    end
 end
