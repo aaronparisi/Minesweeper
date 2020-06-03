@@ -7,8 +7,9 @@ class Minesweeper
     attr_reader :board
 
     def initialize(row_size = 10, num_mines = 10)
-        @board = File.exists?("a_board.yml") ? YAML.load(File.read("a_board.yml")) : Board.new(row_size, num_mines)
-        #@board = Board.new(row_size, num_mines)
+        #@board = File.exists?("a_board.yml") ? YAML.load(File.read("a_board.yml")) : Board.new(row_size, num_mines)
+        @board = Board.new(row_size, num_mines)
+        # this should not get called if we load the game from a yml file??
         @elapsed_time
     end
 
@@ -22,6 +23,7 @@ class Minesweeper
     end
 
     def valid_input(val, type)
+        return true if val == "quit"
         case type
         when "action"
             return "rfu".include?(val)
@@ -46,12 +48,13 @@ class Minesweeper
         until ret && valid_input(ret, type)
             case type
             when "action"
-                stmt = "Please choose one of the following actions\n'r' => reveal | 'f' => flag | 'u' => unflag"
+                stmt = "Please choose one of the following actions\n'r' => reveal | 'f' => flag | 'u' => unflag | 'quit => quit game"
             when "position"
                 stmt = "Please enter the position in the form 'x,y'"
             end
             puts stmt
             ret = parse_input(gets.chomp, type)
+            #debugger
         end
         ret
     end
@@ -83,19 +86,23 @@ class Minesweeper
         end
     end
 
+    def clean_up()
+        File.delete("saved_game.yml") if File.exist?("saved_game.yml")
+    end
+
     def leave_game()
         puts "Would you like to save the game? y/n"
         save = gets.chomp()
         if save == "y"
-            File.open("a_board.yml", "w") {|file| file.write(board.to_yaml)}
+            File.open("saved_game.yml", "w") {|file| file.write(self.to_yaml)}
         else
             # delete any saved board files so they don't get loaded next time
-            File.delete("a_board.yml") if File.exist?("a_board.yml")
+            clean_up
         end
     end
 
     def play_game()
-        board.lay_mines() if ! File.exist?("a_board.yml")
+        board.lay_mines() if ! File.exist?("saved_game.yml")
         starting = Process.clock_gettime(Process::CLOCK_MONOTONIC)
         while true
             last_move = take_turn
@@ -107,9 +114,11 @@ class Minesweeper
                 next
             elsif board.tripped_mine?(last_move[0])
                 blow_up
+                clean_up
                 break
             elsif board.field_cleared?
                 celebrate
+                clean_up
                 break
             else
                 fan_out(last_move[0])
@@ -118,10 +127,9 @@ class Minesweeper
     end
 end
 
-m1 = Minesweeper.new()
+m1 = File.exist?("saved_game.yml") ? YAML.load(File.read("saved_game.yml")) : Minesweeper.new()
 
-starting = Process.clock_gettime(Process::CLOCK_MONOTONIC)
 m1.play_game
-ending = Process.clock_gettime(Process::CLOCK_MONOTONIC)
-elapsed = ending - starting
-puts "elapsed: #{elapsed}" # => 9.183449000120163 seconds
+# ending = Process.clock_gettime(Process::CLOCK_MONOTONIC)
+# elapsed = ending - starting
+# puts "elapsed: #{elapsed}" # => 9.183449000120163 seconds
