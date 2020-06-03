@@ -9,6 +9,7 @@ class Minesweeper
     def initialize(row_size = 10, num_mines = 10)
         @board = File.exists?("a_board.yml") ? YAML.load(File.read("a_board.yml")) : Board.new(row_size, num_mines)
         #@board = Board.new(row_size, num_mines)
+        @elapsed_time
     end
 
     def blow_up()
@@ -95,6 +96,7 @@ class Minesweeper
 
     def play_game()
         board.lay_mines() if ! File.exist?("a_board.yml")
+        starting = Process.clock_gettime(Process::CLOCK_MONOTONIC)
         while true
             last_move = take_turn
             #debugger
