@@ -82,4 +82,9 @@ class Minesweeper
 end
 
 m1 = Minesweeper.new()
+
+starting = Process.clock_gettime(Process::CLOCK_MONOTONIC)
 m1.play_game
+ending = Process.clock_gettime(Process::CLOCK_MONOTONIC)
+elapsed = ending - starting
+puts "elapsed: #{elapsed}" # => 9.183449000120163 seconds
