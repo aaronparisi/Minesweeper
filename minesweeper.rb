@@ -20,14 +20,47 @@ class Minesweeper
         puts "you won!"
     end
 
+    def valid_input(val, type)
+        case type
+        when "action"
+            return "rfu".include?(val)
+        when "position"
+            return val.is_a?(Array) &&
+                val.length == 2 &&
+                val.all? {|i| i.between?(0,board.row_size-1)}
+        end
+    end
+
+    def parse_input(val, type)
+        case type
+        when "action"
+            return val
+        when "position"
+            return val.split(",").map { |char| Integer(char) }
+        end
+    end
+
+    def get_input(type)
+        ret = nil
+        until ret && valid_input(ret, type)
+            case type
+            when "action"
+                stmt = "Please choose one of the following actions\n'r' => reveal | 'f' => flag | 'u' => unflag"
+            when "position"
+                stmt = "Please enter the position in the form 'x,y'"
+            end
+            puts stmt
+            ret = parse_input(gets.chomp, type)
+        end
+        ret
+    end
+
     def take_turn()
         board.render
-        puts "enter a location you'd like to guess in the form 'x,y'"
-        pos = gets.chomp().split(",").map {|n| Integer(n)}
-        puts "enter action you'd like to take"
-        action = gets.chomp()
-        #debugger
-        return nil if action == "quit"
+        action = get_input("action")
+        return if action == "quit"
+        pos = get_input("position")
+
         take_step(pos, action)
 
         [pos, action]
